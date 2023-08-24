@@ -23,7 +23,9 @@ class TWPriorityList<T> {
         ..._containers[TWPriority.superLow]!,
       ];
 
-  List<T> toList() => _allObjects;
+  List<T> get list => _allObjects;
+
+  int get length => _allObjects.length;
 
   T get last => _allObjects.last;
   T get first => _allObjects.first;
@@ -64,8 +66,10 @@ class TWPriorityList<T> {
 
   addToSuperLow(T object) => add(object, priority: TWPriority.superLow);
 
-  void removeWhere(bool Function(T element) test) {
-    _allObjects.removeWhere(test);
+  removeWhere(bool Function(T element) test) {
+    _containers.values.forEach((container) {
+      container.removeWhere(test);
+    });
   }
 
   remove(
@@ -75,7 +79,9 @@ class TWPriorityList<T> {
     if (priority != null) {
       _containers[priority]!.remove(object);
     } else {
-      _allObjects.remove(object);
+      for (final container in _containers.values) {
+        container.remove(object);
+      }
     }
   }
 
@@ -91,8 +97,6 @@ class TWPriorityList<T> {
   removeFromLow(T object) => remove(object, priority: TWPriority.low);
 
   removeFromSuperLow(T object) => remove(object, priority: TWPriority.superLow);
-
-  int get length => _allObjects.length;
 
   T operator [](int index) {
     return _allObjects[index];

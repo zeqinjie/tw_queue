@@ -3,6 +3,20 @@ import 'dart:math';
 
 import 'tw_priority.dart';
 
+class TWQueueHelper {
+  /// random string generator
+  static String getUniqueId({int count = 5}) {
+    String randomStr = Random().nextInt(10).toString();
+    for (var i = 0; i < count; i++) {
+      var str = Random().nextInt(10);
+      randomStr = randomStr + "$str";
+    }
+    final timeNumber = DateTime.now().millisecondsSinceEpoch;
+    final uuid = randomStr + "$timeNumber";
+    return uuid;
+  }
+}
+
 class _QueuedFuture<T> {
   final Completer completer;
   final Future<T> Function() closure;
@@ -51,26 +65,11 @@ class _QueuedFuture<T> {
   }
 }
 
-class TWQueueHelper {
-  /// random string generator
-  static String getUniqueId({int count = 5}) {
-    String randomStr = Random().nextInt(10).toString();
-    for (var i = 0; i < count; i++) {
-      var str = Random().nextInt(10);
-      randomStr = randomStr + "$str";
-    }
-    final timeNumber = DateTime.now().millisecondsSinceEpoch;
-    final uuid = randomStr + "$timeNumber";
-    return uuid;
-  }
-}
-
 /// Queue to execute Futures in order.
 /// It awaits each future before executing the next one.
 class TWQueue {
   final TWPriorityList<_QueuedFuture> _nextCycle =
       TWPriorityList<_QueuedFuture>();
-  // final List<_QueuedFuture> _nextCycle = [];
 
   /// A delay to await between each future.
   final Duration? delay;
@@ -107,12 +106,13 @@ class TWQueue {
     return completer.future;
   }
 
-  /// active item’s tag
-  List<String> activeItemTags = [];
+  Set<String> activeItemTags = {};
 
-  /// cancel all items in the queue
+  /// Cancels the queue. Also cancels any unprocessed items throwing a [QueueCancelledException]
+  ///
+  /// Subsquent calls to [add] will throw.
   void cancel() {
-    for (final item in _nextCycle.toList()) {
+    for (final item in _nextCycle.list) {
       item.completer.completeError(QueueCancelledException());
     }
     _nextCycle.removeWhere((item) => item.completer.isCompleted);
@@ -197,11 +197,11 @@ class TWQueue {
   void _queueUpNext() {
     if (_nextCycle.isNotEmpty && activeItemTags.length <= parallel) {
       final item = lifo ? _nextCycle.last : _nextCycle.first;
-      final processTag = item.tag;
-      activeItemTags.add(processTag);
+      final processId = item.tag;
+      activeItemTags.add(processId);
       _nextCycle.remove(item);
       item.onComplete = () async {
-        activeItemTags.remove(processTag);
+        activeItemTags.remove(processId);
         if (delay != null) {
           await Future.delayed(delay!);
         }

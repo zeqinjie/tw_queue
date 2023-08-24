@@ -1,6 +1,6 @@
+
 import 'package:test/test.dart';
 import 'package:tw_queue/src/tw_queue.dart';
-
 
 void main() {
   group('TWQueue', () {
@@ -303,6 +303,4 @@ void main() {
     expect(errorResults.length, 1);
     expect(errorResults.first, 'error 2');
   });
-
-  
 }
