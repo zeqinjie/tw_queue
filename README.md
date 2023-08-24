@@ -27,7 +27,7 @@ start using the package.
 
 The most simple example:
 ```dart
-import 'package:queue/queue.dart';
+import 'package:tw_queue/tw_queue_export.dart';
 
 main() async {
   final queue = Queue();
@@ -42,7 +42,7 @@ main() async {
 A proof of concept:
 
 ```dart
-import 'package:queue/queue.dart';
+import 'package:tw_queue/tw_queue_export.dart';
 
 main() async {
   //Create the queue container
@@ -68,7 +68,7 @@ This doesn't work in batches and will fire the next item as soon as as there is 
 Use [Queue(delayed: ...)] to specify a delay before firing the next item  
 
 ```dart
-import 'package:queue/queue.dart';
+import 'package:tw_queue/tw_queue_export.dart';
 
 main() async {
   final queue = Queue(parallel: 2);
@@ -83,7 +83,7 @@ main() async {
 
 #### On complete
 ```dart
-import 'package:queue/queue.dart';
+import 'package:tw_queue/tw_queue_export.dart';
 
 main() async {
   final queue = Queue(parallel: 2);
@@ -102,7 +102,7 @@ main() async {
 You can specify a delay before the next item is fired as per the following example:
 
 ```dart
-import 'package:queue/queue.dart';
+import 'package:tw_queue/tw_queue_export.dart';
 
 main() async {
   final queue = Queue(delay: Duration(milliseconds: 500)); // Set the delay here
@@ -119,9 +119,9 @@ main() async {
 
 If you need to stop a queue from processing call Queue.cancel();
 
----This will cancel the remaining items in the queue by throwing a `QueueCancelledException`.
+~~This will cancel the remaining items in the queue by throwing a `QueueCancelledException`.
 A cancelled queue is "dead" and should be recreated. If you try adding items to the queue after you
-call cancel, it will throw a `QueueCancelledException`.---
+call cancel, it will throw a `QueueCancelledException`.~~
 
 If you have no reason to listen to the results of the items, simply call dispose.
 
