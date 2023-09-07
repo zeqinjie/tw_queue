@@ -119,9 +119,9 @@ main() async {
 
 If you need to stop a queue from processing call Queue.cancel();
 
-~~This will cancel the remaining items in the queue by throwing a `QueueCancelledException`.
+This will cancel the remaining items in the queue by throwing a `QueueCancelledException`.
 A cancelled queue is "dead" and should be recreated. If you try adding items to the queue after you
-call cancel, it will throw a `QueueCancelledException`.~~
+call cancel, it will throw a `QueueCancelledException`.
 
 If you have no reason to listen to the results of the items, simply call dispose.
 
@@ -150,7 +150,14 @@ queue.add(()=>Future.delayed(Duration(milliseconds: 10)));
 await queue.onComplete;
 remainingItemsStream.close();
 queue.dispose(); // Will clean up any resources in the queue if you are done with it.
+
+
 ```
+## change 
+- fix: the problem of exceeding the specified number of concurrent tasks [pull16](https://github.com/rknell/dart_queue/pull/16)
+- fix: after cancel,can add to queue [pull17](https://github.com/rknell/dart_queue/pull/17)
+- support lifo from [pull19](https://github.com/rknell/dart_queue/pull/18)
+
 
 ## Contributing
 
@@ -167,4 +174,4 @@ contribute to the package, how to file issues, what response they can expect
 from the package authors, and more.
 
 ## Modify Form 
-fork form https://github.com/rknell/dart_queue
+thx and fork form [dart_queue](https://github.com/rknell/dart_queue)
