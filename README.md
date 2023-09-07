@@ -30,7 +30,7 @@ The most simple example:
 import 'package:tw_queue/tw_queue_export.dart';
 
 main() async {
-  final queue = Queue();
+  final queue = TWQueue();
 
   //Queue up a future and await its result
   final result = await queue.add(()=>Future.delayed(Duration(milliseconds: 10)));
@@ -46,7 +46,7 @@ import 'package:tw_queue/tw_queue_export.dart';
 
 main() async {
   //Create the queue container
-  final Queue queue = Queue(delay: Duration(milliseconds: 10));
+  final Queue queue = TWQueue(delay: Duration(milliseconds: 10));
   
   //Add items to the queue asyncroniously
   queue.add(()=>Future.delayed(Duration(milliseconds: 100)));
@@ -71,7 +71,7 @@ Use [Queue(delayed: ...)] to specify a delay before firing the next item
 import 'package:tw_queue/tw_queue_export.dart';
 
 main() async {
-  final queue = Queue(parallel: 2);
+  final queue = TWQueue(parallel: 2);
 
   //Queue up a future and await its result
   final result1 = await queue.add(()=>Future.delayed(Duration(milliseconds: 10)));
@@ -86,7 +86,7 @@ main() async {
 import 'package:tw_queue/tw_queue_export.dart';
 
 main() async {
-  final queue = Queue(parallel: 2);
+  final queue = TWQueue(parallel: 2);
 
   //Queue up a couple of futures
   queue.add(()=>Future.delayed(Duration(milliseconds: 10)));
@@ -105,7 +105,7 @@ You can specify a delay before the next item is fired as per the following examp
 import 'package:tw_queue/tw_queue_export.dart';
 
 main() async {
-  final queue = Queue(delay: Duration(milliseconds: 500)); // Set the delay here
+  final queue = TWQueue(delay: Duration(milliseconds: 500)); // Set the delay here
 
   //Queue up a future and await its result
   final result1 = await queue.add(()=>Future.delayed(Duration(milliseconds: 10)));
@@ -138,7 +138,7 @@ If you want to query how many items are outstanding in the queue, listen to the 
 
 ```dart
 import 'package:tw_queue/tw_queue_export.dart';
-final queue = Queue();
+final queue = TWQueue();
 
 final remainingItemsStream = queue.remainingItems.listen((numberOfItems)=>print(numberOfItems));
 
@@ -153,10 +153,173 @@ queue.dispose(); // Will clean up any resources in the queue if you are done wit
 
 
 ```
-## Change 
+
+#### Remove Task
+It will be removed from the queue task, if it has not yet been executed. 
+
+```dart
+import 'package:tw_queue/tw_queue_export.dart';
+final queue = TWQueue();
+final t1 = 'testQueue4-1';
+final t2 = 'testQueue4-2';
+final t3 = 'testQueue4-3';
+final t4 = 'testQueue4-4';
+final results = <String?>[];
+unawaited(
+  queue.add(
+    () async {
+      await Future.delayed(const Duration(seconds: 1));
+      results.add(t1);
+    },
+    tag: t1,
+  ),
+);
+unawaited(
+  queue.add(
+    () async {
+      await Future.delayed(const Duration(seconds: 1));
+      results.add(t2);
+    },
+    tag: t2,
+  ),
+);
+
+unawaited(
+  queue.add(
+    () async {
+      await Future.delayed(const Duration(seconds: 1));
+      results.add(t3);
+    },
+    tag: t3,
+  ),
+);
+
+unawaited(
+  queue.add(
+    () async {
+      await Future.delayed(const Duration(seconds: 1));
+      results.add(t4);
+    },
+    tag: t4,
+  ),
+);
+// remove t2 and t4
+queue.remove(t2);
+queue.remove(t4);
+await queue.onComplete;
+// log: results [testQueue4-1, testQueue4-3]
+print('results $results');
+```
+
+
+
+#### Pause and Resume
+
+It will be pause the queue task, if it has not yet been executed. 
+
+```dart
+final queue = TWQueue();
+final results = <String?>[];
+final t1 = 'testQueue4-1';
+final t2 = 'testQueue4-2';
+final t3 = 'testQueue4-3';
+final t4 = 'testQueue4-4';
+
+await queue.add(
+  () async {
+    await Future.delayed(const Duration(seconds: 1));
+    results.add(t1);
+  },
+);
+await queue.add(
+  () async {
+    await Future.delayed(const Duration(seconds: 1));
+    results.add(t2);
+  },
+);
+queue.pause();
+unawaited(queue.add(
+  () async {
+    await Future.delayed(const Duration(seconds: 1));
+    results.add(t3);
+  },
+));
+unawaited(queue.add(
+  () async {
+    await Future.delayed(const Duration(seconds: 1));
+    results.add(t4);
+  },
+));
+Future.delayed(const Duration(seconds: 1), () {
+  // delayed results [testQueue4-1, testQueue4-2]
+  print('delayed results $results');
+  queue.resume();
+});
+await queue.onComplete;
+// onComplete results [testQueue4-1, testQueue4-2, testQueue4-3, testQueue4-4]
+print('onComplete results $results');
+```
+
+
+
+#### Set task priority
+
+It will be set  the queue task priority,  if it has not yet been executed. 
+
+```dart
+final queue = TWQueue();
+final t1 = 'testQueue4-1';
+final t2 = 'testQueue4-2';
+final t3 = 'testQueue4-3';
+final t4 = 'testQueue4-4';
+final results = <String?>[];
+//Queue up a future and await its result
+queue.add(
+  tag: t1,
+  () async {
+    await Future.delayed(const Duration(seconds: 1));
+    results.add(t1);
+    print('res1 = $t1');
+  },
+);
+queue.add(
+  tag: t2,
+  () async {
+    await Future.delayed(const Duration(seconds: 1));
+    results.add(t2);
+    print('res2 = $t2');
+  },
+);
+
+queue.add(
+  tag: t3,
+  () async {
+    await Future.delayed(const Duration(seconds: 1));
+    results.add(t3);
+    print('res3 = $t3');
+  },
+  priority: TWPriority.low,
+);
+
+queue.add(
+  tag: t4,
+  () async {
+    await Future.delayed(const Duration(seconds: 1));
+    results.add(t4);
+    print('res4 = $t4');
+  },
+  priority: TWPriority.high,
+);
+await queue.onComplete;
+print('results = $results');
+```
+
+
+##  Change 
+
 - fix: the problem of exceeding the specified number of concurrent tasks [pull16](https://github.com/rknell/dart_queue/pull/16)
 - fix: after cancel,can add to queue [pull17](https://github.com/rknell/dart_queue/pull/17)
-- feat: support lifo from [pull19](https://github.com/rknell/dart_queue/pull/18)
+- support lifo from [pull18](https://github.com/rknell/dart_queue/pull/18)
 - feat: support remove task
 - feat: support pause and resume task
 - feat: support set task priority
