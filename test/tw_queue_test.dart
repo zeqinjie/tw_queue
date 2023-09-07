@@ -180,126 +180,226 @@ void main() {
       expect(errorQueue.activeItemTags.length, 0);
       expect(hitError, 101);
     });
-  });
 
-  test('should cancel', () async {
-    final cancelQueue = TWQueue();
-    final results = <String?>[];
-    final errors = <Exception>[];
+    test('should cancel', () async {
+      final cancelQueue = TWQueue();
+      final results = <String?>[];
+      final errors = <Exception>[];
 
-    unawaited(Future.wait([
-      cancelQueue
+      unawaited(Future.wait([
+        cancelQueue
+            .add(() async {
+              await Future.delayed(const Duration(milliseconds: 10));
+              return "result 1";
+            })
+            .then((result) => results.add(result))
+            .catchError((err) => errors.add(err)),
+        cancelQueue
+            .add(() async {
+              await Future.delayed(const Duration(milliseconds: 10));
+              return "result 2";
+            })
+            .then((result) => results.add(result))
+            .catchError((err) => errors.add(err)),
+        cancelQueue
+            .add(() async {
+              await Future.delayed(const Duration(milliseconds: 10));
+              return "result 3";
+            })
+            .then((result) => results.add(result))
+            .catchError((err) => errors.add(err)),
+        cancelQueue
+            .add(() async {
+              await Future.delayed(const Duration(milliseconds: 10));
+              return "result 4";
+            })
+            .then((result) => results.add(result))
+            .catchError((err) => errors.add(err)),
+        cancelQueue
+            .add(() async {
+              await Future.delayed(const Duration(milliseconds: 10));
+              return "result 5";
+            })
+            .then((result) => results.add(result))
+            .catchError((err) => errors.add(err))
+      ]));
+
+      await Future.delayed(const Duration(milliseconds: 25));
+      cancelQueue.cancel();
+      await cancelQueue.onComplete;
+      expect(results.length, 3);
+      expect(errors.length, 2);
+      expect(errors.first is QueueCancelledException, true);
+    });
+
+    test("timed out queue item still completes", () async {
+      final queue = TWQueue(timeout: const Duration(milliseconds: 10));
+
+      final resultOrder = [];
+
+      unawaited(queue.onComplete.then((_) => resultOrder.add("timedout")));
+      resultOrder.add(await queue.add(() async {
+        await Future.delayed(const Duration(seconds: 1));
+        return "test";
+      }));
+
+      expect(resultOrder.length, 2);
+      expect(resultOrder.first, "timedout");
+      expect(resultOrder[1], "test");
+    });
+
+    test("it handles null as expected", () async {
+      final queue = TWQueue();
+
+      final result = await queue.add(() async => null);
+      expect(result, null);
+    });
+
+    test("cancel result 2 and continue next result3", () async {
+      final queue = TWQueue(delay: const Duration(milliseconds: 100));
+      final results = <String?>[];
+      final errors = <Exception>[];
+      final errorResults = <String?>[];
+
+      unawaited(queue
           .add(() async {
             await Future.delayed(const Duration(milliseconds: 10));
             return "result 1";
           })
           .then((result) => results.add(result))
-          .catchError((err) => errors.add(err)),
-      cancelQueue
+          .catchError((err) {
+            errors.add(err);
+            errorResults.add('error 1');
+          }));
+
+      unawaited(queue
           .add(() async {
             await Future.delayed(const Duration(milliseconds: 10));
             return "result 2";
           })
           .then((result) => results.add(result))
-          .catchError((err) => errors.add(err)),
-      cancelQueue
+          .catchError((err) {
+            errors.add(err);
+            errorResults.add('error 2');
+          }));
+
+      queue.cancel();
+
+      await queue
           .add(() async {
             await Future.delayed(const Duration(milliseconds: 10));
             return "result 3";
           })
           .then((result) => results.add(result))
-          .catchError((err) => errors.add(err)),
-      cancelQueue
-          .add(() async {
-            await Future.delayed(const Duration(milliseconds: 10));
-            return "result 4";
-          })
-          .then((result) => results.add(result))
-          .catchError((err) => errors.add(err)),
-      cancelQueue
-          .add(() async {
-            await Future.delayed(const Duration(milliseconds: 10));
-            return "result 5";
-          })
-          .then((result) => results.add(result))
-          .catchError((err) => errors.add(err))
-    ]));
+          .catchError((err) {
+            errors.add(err);
+            errorResults.add('error 3');
+          });
 
-    await Future.delayed(const Duration(milliseconds: 25));
-    cancelQueue.cancel();
-    await cancelQueue.onComplete;
-    expect(results.length, 3);
-    expect(errors.length, 2);
-    expect(errors.first is QueueCancelledException, true);
+      expect(results.length, 2);
+      expect(errors.length, 1);
+      expect(errorResults.length, 1);
+      expect(errorResults.first, 'error 2');
+    });
   });
 
-  test("timed out queue item still completes", () async {
-    final queue = TWQueue(timeout: const Duration(milliseconds: 10));
-
-    final resultOrder = [];
-
-    unawaited(queue.onComplete.then((_) => resultOrder.add("timedout")));
-    resultOrder.add(await queue.add(() async {
-      await Future.delayed(const Duration(seconds: 1));
-      return "test";
-    }));
-
-    expect(resultOrder.length, 2);
-    expect(resultOrder.first, "timedout");
-    expect(resultOrder[1], "test");
-  });
-
-  test("it handles null as expected", () async {
+  test("remove t2 and t4 success", () async {
     final queue = TWQueue();
+    final t1 = 'testQueue4-1';
+    final t2 = 'testQueue4-2';
+    final t3 = 'testQueue4-3';
+    final t4 = 'testQueue4-4';
+    final results = <String?>[];
 
-    final result = await queue.add(() async => null);
-    expect(result, null);
+    unawaited(
+      queue.add(
+        () async {
+          await Future.delayed(const Duration(seconds: 1));
+          results.add(t1);
+        },
+        tag: t1,
+      ),
+    );
+    unawaited(
+      queue.add(
+        () async {
+          await Future.delayed(const Duration(seconds: 1));
+          results.add(t2);
+        },
+        tag: t2,
+      ),
+    );
+
+    unawaited(
+      queue.add(
+        () async {
+          await Future.delayed(const Duration(seconds: 1));
+          results.add(t3);
+        },
+        tag: t3,
+      ),
+    );
+
+    unawaited(
+      queue.add(
+        () async {
+          await Future.delayed(const Duration(seconds: 1));
+          results.add(t4);
+        },
+        tag: t4,
+      ),
+    );
+    queue.remove(t2);
+    queue.remove(t4);
+    await queue.onComplete;
+    expect(results.length, 2);
   });
 
-  test("cancel result 2 and continue next result3", () async {
-    final queue = TWQueue(delay: const Duration(milliseconds: 100));
+  test("pause and resume queue", () async {
+    final queue = TWQueue();
     final results = <String?>[];
-    final errors = <Exception>[];
-    final errorResults = <String?>[];
+    final t1 = 'testQueue4-1';
+    final t2 = 'testQueue4-2';
+    final t3 = 'testQueue4-3';
+    final t4 = 'testQueue4-4';
+    final t5 = 'testQueue4-5';
 
-    unawaited(queue
-        .add(() async {
-          await Future.delayed(const Duration(milliseconds: 10));
-          return "result 1";
-        })
-        .then((result) => results.add(result))
-        .catchError((err) {
-          errors.add(err);
-          errorResults.add('error 1');
-        }));
-
-    unawaited(queue
-        .add(() async {
-          await Future.delayed(const Duration(milliseconds: 10));
-          return "result 2";
-        })
-        .then((result) => results.add(result))
-        .catchError((err) {
-          errors.add(err);
-          errorResults.add('error 2');
-        }));
-
-    queue.cancel();
-
-    await queue
-        .add(() async {
-          await Future.delayed(const Duration(milliseconds: 10));
-          return "result 3";
-        })
-        .then((result) => results.add(result))
-        .catchError((err) {
-          errors.add(err);
-          errorResults.add('error 3');
-        });
-
-    expect(results.length, 2);
-    expect(errors.length, 1);
-    expect(errorResults.length, 1);
-    expect(errorResults.first, 'error 2');
+    await queue.add(
+      () async {
+        await Future.delayed(const Duration(seconds: 1));
+        results.add(t1);
+      },
+    );
+    await queue.add(
+      () async {
+        await Future.delayed(const Duration(seconds: 1));
+        results.add(t2);
+      },
+    );
+    queue.pause();
+    unawaited(queue.add(
+      () async {
+        await Future.delayed(const Duration(seconds: 1));
+        results.add(t3);
+      },
+    ));
+    unawaited(queue.add(
+      () async {
+        await Future.delayed(const Duration(seconds: 1));
+        results.add(t4);
+      },
+    ));
+    unawaited(queue.add(
+      () async {
+        await Future.delayed(const Duration(seconds: 1));
+        results.add(t5);
+      },
+    ));
+    Future.delayed(const Duration(seconds: 1), () {
+      expect(results.length, 2);
+      queue.resume();
+    });
+    await queue.onComplete;
+    expect(results.length, 5);
   });
 }

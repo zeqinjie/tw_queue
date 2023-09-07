@@ -1,21 +1,7 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'tw_priority.dart';
-
-class TWQueueHelper {
-  /// random string generator
-  static String getUniqueId({int count = 5}) {
-    String randomStr = Random().nextInt(10).toString();
-    for (var i = 0; i < count; i++) {
-      var str = Random().nextInt(10);
-      randomStr = randomStr + "$str";
-    }
-    final timeNumber = DateTime.now().millisecondsSinceEpoch;
-    final uuid = randomStr + "$timeNumber";
-    return uuid;
-  }
-}
+import 'tw_queue_helper.dart';
 
 class _QueuedFuture<T> {
   final Completer completer;
@@ -90,6 +76,13 @@ class TWQueue {
 
   StreamController<int>? _remainingItemsController;
 
+  TWQueue({
+    this.delay,
+    this.parallel = 1,
+    this.timeout,
+    this.lifo = false,
+  });
+
   Stream<int> get remainingItems {
     // Lazily create the remaining items controller so if people aren't listening to the stream, it won't create any potential memory leaks.
     // Probably not necessary, but hey, why not?
@@ -109,6 +102,7 @@ class TWQueue {
     return completer.future;
   }
 
+  /// active items tags
   Set<String> activeItemTags = {};
 
   /// Cancels the queue. Also cancels any unprocessed items throwing a [QueueCancelledException]
@@ -132,6 +126,7 @@ class TWQueue {
   }
 
   /// pause of the queue
+  /// It will be pause  the queue if it has not yet been executed.
   void pause() {
     isPause = true;
   }
@@ -141,13 +136,6 @@ class TWQueue {
     isPause = false;
     unawaited(_process());
   }
-
-  TWQueue({
-    this.delay,
-    this.parallel = 1,
-    this.timeout,
-    this.lifo = false,
-  });
 
   /// Adds the future-returning closure to the queue.
   ///
@@ -177,6 +165,7 @@ class TWQueue {
   }
 
   /// Removes the future-returning closure from the queue.
+  /// It will be removed from the queue if it has not yet been executed.
   void remove(
     String tag, {
     TWPriority priority = TWPriority.middle,
