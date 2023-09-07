@@ -1,5 +1,6 @@
 import 'package:test/test.dart';
 import 'package:tw_queue/src/tw_queue.dart';
+import 'package:tw_queue/tw_queue_export.dart';
 
 void main() {
   group('TWQueue', () {
@@ -400,6 +401,49 @@ void main() {
       });
       await queue.onComplete;
       expect(results.length, 5);
+    });
+
+    test("set queue priority", () async {
+      final queue = TWQueue();
+      final results = <String?>[];
+      final t1 = 'testQueue5-1';
+      final t2 = 'testQueue5-2';
+      final t3 = 'testQueue5-3';
+      final t4 = 'testQueue5-4';
+
+      unawaited(queue.add(
+        () async {
+          await Future.delayed(const Duration(seconds: 1));
+          results.add(t1);
+        },
+      ));
+      unawaited(queue.add(
+        () async {
+          await Future.delayed(const Duration(seconds: 1));
+          results.add(t2);
+        },
+      ));
+      unawaited(queue.add(
+        () async {
+          await Future.delayed(const Duration(seconds: 1));
+          results.add(t3);
+        },
+        priority: TWPriority.low,
+      ));
+       unawaited(queue.add(
+        () async {
+          await Future.delayed(const Duration(seconds: 1));
+          results.add(t4);
+        },
+        priority: TWPriority.high,
+      ));
+
+      await queue.onComplete;
+      expect(results.length, 4);
+      expect(results[0], t1);
+      expect(results[1], t4);
+      expect(results[2], t2);
+      expect(results[3], t3);
     });
   });
 }

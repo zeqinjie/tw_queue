@@ -153,10 +153,13 @@ queue.dispose(); // Will clean up any resources in the queue if you are done wit
 
 
 ```
-## change 
+## Change 
 - fix: the problem of exceeding the specified number of concurrent tasks [pull16](https://github.com/rknell/dart_queue/pull/16)
 - fix: after cancel,can add to queue [pull17](https://github.com/rknell/dart_queue/pull/17)
-- support lifo from [pull19](https://github.com/rknell/dart_queue/pull/18)
+- feat: support lifo from [pull19](https://github.com/rknell/dart_queue/pull/18)
+- feat: support remove task
+- feat: support pause and resume task
+- feat: support set task priority
 
 
 ## Contributing
