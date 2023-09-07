@@ -1,6 +1,6 @@
 import 'package:test/test.dart';
-import 'package:tw_queue/src/tw_queue.dart';
-import 'package:tw_queue/tw_queue_export.dart';
+import 'package:tw_queue/src/tw_queue_base.dart';
+import 'package:tw_queue/tw_queue.dart';
 
 void main() {
   group('TWQueue', () {
@@ -161,7 +161,7 @@ void main() {
       int hitError = 0;
       final errorQueue = TWQueue(parallel: 10);
       for (var i = 0; i < 100; i++) {
-        unawaited(errorQueue.add<Object?>(() async {
+        unawaited(errorQueue.add<dynamic>(() async {
           await Future.delayed(const Duration(milliseconds: 100));
           throw Exception("test exception");
         }).catchError((err) {
@@ -430,7 +430,7 @@ void main() {
         },
         priority: TWPriority.low,
       ));
-       unawaited(queue.add(
+      unawaited(queue.add(
         () async {
           await Future.delayed(const Duration(seconds: 1));
           results.add(t4);
