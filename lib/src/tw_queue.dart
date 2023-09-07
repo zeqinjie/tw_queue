@@ -85,6 +85,9 @@ class TWQueue {
   /// Can be edited mid processing
   int parallel;
 
+  /// pause of the queue
+  bool isPause = false;
+
   StreamController<int>? _remainingItemsController;
 
   Stream<int> get remainingItems {
@@ -126,6 +129,17 @@ class TWQueue {
   void dispose() {
     _remainingItemsController?.close();
     cancel();
+  }
+
+  /// pause of the queue
+  void pause() {
+    isPause = true;
+  }
+
+  /// resume of the queue
+  void resume() {
+    isPause = false;
+    unawaited(_process());
   }
 
   TWQueue({
@@ -195,7 +209,8 @@ class TWQueue {
   }
 
   void _queueUpNext() {
-    if (_nextCycle.isNotEmpty && activeItemTags.length <= parallel) {
+    if (isPause) return;
+    if (_nextCycle.isNotEmpty && activeItemTags.length < parallel) {
       final item = lifo ? _nextCycle.last : _nextCycle.first;
       final processId = item.tag;
       activeItemTags.add(processId);
