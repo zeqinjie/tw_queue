@@ -301,105 +301,105 @@ void main() {
       expect(errorResults.length, 1);
       expect(errorResults.first, 'error 2');
     });
-  });
 
-  test("remove t2 and t4 success", () async {
-    final queue = TWQueue();
-    final t1 = 'testQueue4-1';
-    final t2 = 'testQueue4-2';
-    final t3 = 'testQueue4-3';
-    final t4 = 'testQueue4-4';
-    final results = <String?>[];
+    test("remove t2 and t4 success", () async {
+      final queue = TWQueue();
+      final t1 = 'testQueue4-1';
+      final t2 = 'testQueue4-2';
+      final t3 = 'testQueue4-3';
+      final t4 = 'testQueue4-4';
+      final results = <String?>[];
 
-    unawaited(
-      queue.add(
+      unawaited(
+        queue.add(
+          () async {
+            await Future.delayed(const Duration(seconds: 1));
+            results.add(t1);
+          },
+          tag: t1,
+        ),
+      );
+      unawaited(
+        queue.add(
+          () async {
+            await Future.delayed(const Duration(seconds: 1));
+            results.add(t2);
+          },
+          tag: t2,
+        ),
+      );
+
+      unawaited(
+        queue.add(
+          () async {
+            await Future.delayed(const Duration(seconds: 1));
+            results.add(t3);
+          },
+          tag: t3,
+        ),
+      );
+
+      unawaited(
+        queue.add(
+          () async {
+            await Future.delayed(const Duration(seconds: 1));
+            results.add(t4);
+          },
+          tag: t4,
+        ),
+      );
+      queue.remove(t2);
+      queue.remove(t4);
+      await queue.onComplete;
+      expect(results.length, 2);
+    });
+
+    test("pause and resume queue", () async {
+      final queue = TWQueue();
+      final results = <String?>[];
+      final t1 = 'testQueue4-1';
+      final t2 = 'testQueue4-2';
+      final t3 = 'testQueue4-3';
+      final t4 = 'testQueue4-4';
+      final t5 = 'testQueue4-5';
+
+      await queue.add(
         () async {
           await Future.delayed(const Duration(seconds: 1));
           results.add(t1);
         },
-        tag: t1,
-      ),
-    );
-    unawaited(
-      queue.add(
+      );
+      await queue.add(
         () async {
           await Future.delayed(const Duration(seconds: 1));
           results.add(t2);
         },
-        tag: t2,
-      ),
-    );
-
-    unawaited(
-      queue.add(
+      );
+      queue.pause();
+      unawaited(queue.add(
         () async {
           await Future.delayed(const Duration(seconds: 1));
           results.add(t3);
         },
-        tag: t3,
-      ),
-    );
-
-    unawaited(
-      queue.add(
+      ));
+      unawaited(queue.add(
         () async {
           await Future.delayed(const Duration(seconds: 1));
           results.add(t4);
         },
-        tag: t4,
-      ),
-    );
-    queue.remove(t2);
-    queue.remove(t4);
-    await queue.onComplete;
-    expect(results.length, 2);
-  });
-
-  test("pause and resume queue", () async {
-    final queue = TWQueue();
-    final results = <String?>[];
-    final t1 = 'testQueue4-1';
-    final t2 = 'testQueue4-2';
-    final t3 = 'testQueue4-3';
-    final t4 = 'testQueue4-4';
-    final t5 = 'testQueue4-5';
-
-    await queue.add(
-      () async {
-        await Future.delayed(const Duration(seconds: 1));
-        results.add(t1);
-      },
-    );
-    await queue.add(
-      () async {
-        await Future.delayed(const Duration(seconds: 1));
-        results.add(t2);
-      },
-    );
-    queue.pause();
-    unawaited(queue.add(
-      () async {
-        await Future.delayed(const Duration(seconds: 1));
-        results.add(t3);
-      },
-    ));
-    unawaited(queue.add(
-      () async {
-        await Future.delayed(const Duration(seconds: 1));
-        results.add(t4);
-      },
-    ));
-    unawaited(queue.add(
-      () async {
-        await Future.delayed(const Duration(seconds: 1));
-        results.add(t5);
-      },
-    ));
-    Future.delayed(const Duration(seconds: 1), () {
-      expect(results.length, 2);
-      queue.resume();
+      ));
+      unawaited(queue.add(
+        () async {
+          await Future.delayed(const Duration(seconds: 1));
+          results.add(t5);
+        },
+      ));
+      Future.delayed(const Duration(seconds: 1), () {
+        expect(results.length, 2);
+        queue.resume();
+      });
+      await queue.onComplete;
+      expect(results.length, 5);
     });
-    await queue.onComplete;
-    expect(results.length, 5);
   });
 }
