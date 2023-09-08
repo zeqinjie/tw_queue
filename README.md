@@ -1,18 +1,6 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+# Queue
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages).
-
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages).
--->
-
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+Easily queue futures and await their values.
 
 ## Usage
 
@@ -315,20 +303,5 @@ print('results = $results');
 * feat: support pause and resume task
 * feat: support set task priority
 
-
-## Contributing
-
-Pull requests are welcome. There is a shell script `ci_checks.sh` that will run the checks to get 
-past CI and also format the code before committing. If that all passes your PR will likely be accepted.
-
-Please write tests to cover your new feature.
-
-
-## Additional information
-
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
-
-## Modify Form 
-thx and fork form [dart_queue](https://github.com/rknell/dart_queue)
+## Thx 
+fork form [dart_queue](https://github.com/rknell/dart_queue)
