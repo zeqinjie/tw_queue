@@ -25,7 +25,7 @@ import 'package:tw_queue/tw_queue_export.dart';
 
 main() async {
   //Create the queue container
-  final Queue queue = TWQueue(delay: Duration(milliseconds: 10));
+  final queue = TWQueue(delay: Duration(milliseconds: 10));
   
   //Add items to the queue asyncroniously
   queue.add(()=>Future.delayed(Duration(milliseconds: 100)));
@@ -189,8 +189,6 @@ await queue.onComplete;
 // log: results [testQueue4-1, testQueue4-3]
 print('results $results');
 ```
-
-
 
 #### Pause and Resume
 
