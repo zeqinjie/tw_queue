@@ -203,10 +203,10 @@ class _TWQueueTestPageState extends State<TWQueueTestPage> {
   /// remove
   testQueue5() async {
     final queue = TWQueue();
-    final t1 = 'testQueue4-1';
-    final t2 = 'testQueue4-2';
-    final t3 = 'testQueue4-3';
-    final t4 = 'testQueue4-4';
+    final t1 = 'testQueue5-1';
+    final t2 = 'testQueue5-2';
+    final t3 = 'testQueue5-3';
+    final t4 = 'testQueue5-4';
     final results = <String?>[];
     unawaited(
       queue.add(
@@ -255,10 +255,10 @@ class _TWQueueTestPageState extends State<TWQueueTestPage> {
   testQueue6() async {
     final queue = TWQueue();
     final results = <String?>[];
-    final t1 = 'testQueue4-1';
-    final t2 = 'testQueue4-2';
-    final t3 = 'testQueue4-3';
-    final t4 = 'testQueue4-4';
+    final t1 = 'testQueue6-1';
+    final t2 = 'testQueue6-2';
+    final t3 = 'testQueue6-3';
+    final t4 = 'testQueue6-4';
 
     await queue.add(
       () async {

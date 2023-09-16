@@ -8,3 +8,6 @@ fork form [dart_queue](https://github.com/rknell/dart_queue)
 * feat: support remove task
 * feat: support pause and resume task
 * feat: support set task priority
+
+## 0.0.2
+* add demo
