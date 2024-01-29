@@ -101,4 +101,10 @@ class TWPriorityList<T> {
   T operator [](int index) {
     return _allObjects[index];
   }
+
+  clear() {
+    _containers.values.forEach((container) {
+      container.clear();
+    });
+  }
 }
