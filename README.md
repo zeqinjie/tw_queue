@@ -327,7 +327,7 @@ testQueue7() async {
   ));
   queue.removeAll();
   await queue.onComplete;
-  TWLog('onComplete results $results');
+  print('onComplete results $results');
 }
 ```
 
