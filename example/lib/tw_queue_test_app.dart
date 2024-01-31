@@ -21,6 +21,7 @@ class _TWQueueTestPageState extends State<TWQueueTestPage> {
     testQueue4();
     testQueue5();
     testQueue6();
+    testQueue7();
   }
 
   @override
@@ -91,10 +92,10 @@ class _TWQueueTestPageState extends State<TWQueueTestPage> {
     final queue = TWQueue(parallel: 2);
 
     //Queue up a future and await its result
-    final result1 =
-        await queue.add(() => Future.delayed(Duration(milliseconds: 10)));
-    final result2 =
-        await queue.add(() => Future.delayed(Duration(milliseconds: 10)));
+
+    await queue.add(() => Future.delayed(const Duration(milliseconds: 10)));
+
+    await queue.add(() => Future.delayed(const Duration(milliseconds: 10)));
 
     await queue.onComplete;
   }
@@ -152,12 +153,13 @@ class _TWQueueTestPageState extends State<TWQueueTestPage> {
         .catchError((e) => TWLog('Message 4 error: $e')));
   }
 
+  /// Set task priority
   testQueue4() async {
     final queue = TWQueue();
-    final t1 = 'testQueue4-1';
-    final t2 = 'testQueue4-2';
-    final t3 = 'testQueue4-3';
-    final t4 = 'testQueue4-4';
+    const t1 = 'testQueue4-1';
+    const t2 = 'testQueue4-2';
+    const t3 = 'testQueue4-3';
+    const t4 = 'testQueue4-4';
     final results = <String?>[];
     //Queue up a future and await its result
     queue.add(
@@ -200,13 +202,13 @@ class _TWQueueTestPageState extends State<TWQueueTestPage> {
     TWLog('results = $results');
   }
 
-  /// remove
+  /// Remove Task
   testQueue5() async {
     final queue = TWQueue();
-    final t1 = 'testQueue5-1';
-    final t2 = 'testQueue5-2';
-    final t3 = 'testQueue5-3';
-    final t4 = 'testQueue5-4';
+    const t1 = 'testQueue5-1';
+    const t2 = 'testQueue5-2';
+    const t3 = 'testQueue5-3';
+    const t4 = 'testQueue5-4';
     final results = <String?>[];
     unawaited(
       queue.add(
@@ -252,13 +254,14 @@ class _TWQueueTestPageState extends State<TWQueueTestPage> {
     TWLog('results $results');
   }
 
+  /// Pause and Resume
   testQueue6() async {
     final queue = TWQueue();
     final results = <String?>[];
-    final t1 = 'testQueue6-1';
-    final t2 = 'testQueue6-2';
-    final t3 = 'testQueue6-3';
-    final t4 = 'testQueue6-4';
+    const t1 = 'testQueue6-1';
+    const t2 = 'testQueue6-2';
+    const t3 = 'testQueue6-3';
+    const t4 = 'testQueue6-4';
 
     await queue.add(
       () async {
@@ -292,6 +295,44 @@ class _TWQueueTestPageState extends State<TWQueueTestPage> {
     });
     await queue.onComplete;
     // onComplete results [testQueue4-1, testQueue4-2, testQueue4-3, testQueue4-4]
+    TWLog('onComplete results $results');
+  }
+
+  /// Remove All
+  testQueue7() async {
+    final queue = TWQueue();
+    final results = <String?>[];
+    const t1 = 'testQueue7-1';
+    const t2 = 'testQueue7-2';
+    const t3 = 'testQueue7-3';
+    const t4 = 'testQueue7-4';
+
+    unawaited(queue.add(
+      () async {
+        await Future.delayed(const Duration(seconds: 1));
+        results.add(t1);
+      },
+    ));
+    unawaited(queue.add(
+      () async {
+        await Future.delayed(const Duration(seconds: 1));
+        results.add(t2);
+      },
+    ));
+    unawaited(queue.add(
+      () async {
+        await Future.delayed(const Duration(seconds: 1));
+        results.add(t3);
+      },
+    ));
+    unawaited(queue.add(
+      () async {
+        await Future.delayed(const Duration(seconds: 1));
+        results.add(t4);
+      },
+    ));
+    queue.removeAll();
+    await queue.onComplete;
     TWLog('onComplete results $results');
   }
 }

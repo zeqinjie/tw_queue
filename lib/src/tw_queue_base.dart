@@ -175,6 +175,14 @@ class TWQueue {
     _updateRemainingItems();
   }
 
+  /// Removes all items from the queue that have not thrown a [QueueCancelledException]
+  /// It will be removed from the queue if it has not yet been executed.
+  void removeAll() {
+    _nextCycle.clear();
+    activeItemTags.clear();
+    _updateRemainingItems();
+  }
+
   /// Handles the number of parallel tasks firing at any one time
   ///
   /// It does this by checking how many streams are running by querying active

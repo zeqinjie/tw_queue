@@ -288,14 +288,58 @@ await queue.onComplete;
 print('onComplete results $results');
 ```
 
+#### Remove All
+Removes all items from the queue that have not thrown a [QueueCancelledException]
+It will be removed from the queue if it has not yet been executed.
+
+``` dart
+testQueue7() async {
+  final queue = TWQueue();
+  final results = <String?>[];
+  final t1 = 'testQueue7-1';
+  final t2 = 'testQueue7-2';
+  final t3 = 'testQueue7-3';
+  final t4 = 'testQueue7-4';
+
+  unawaited(queue.add(
+    () async {
+      await Future.delayed(const Duration(seconds: 1));
+      results.add(t1);
+    },
+  ));
+  unawaited(queue.add(
+    () async {
+      await Future.delayed(const Duration(seconds: 1));
+      results.add(t2);
+    },
+  ));
+  unawaited(queue.add(
+    () async {
+      await Future.delayed(const Duration(seconds: 1));
+      results.add(t3);
+    },
+  ));
+  unawaited(queue.add(
+    () async {
+      await Future.delayed(const Duration(seconds: 1));
+      results.add(t4);
+    },
+  ));
+  queue.removeAll();
+  await queue.onComplete;
+  TWLog('onComplete results $results');
+}
+```
+
 ##  Change 
 
 * fix: the problem of exceeding the specified number of concurrent tasks [pull16](https://github.com/rknell/dart_queue/pull/16)
 * fix: after cancel,can add to queue [pull17](https://github.com/rknell/dart_queue/pull/17)
 * feat: support lifo from [pull18](https://github.com/rknell/dart_queue/pull/18)
 * feat: support set task priority
-* feat: support remove task
+* feat: support remove unexecuted task 
 * feat: support pause and resume task
+* feat: support remove all unexecuted task
 
 ## Thx 
 fork form [dart_queue](https://github.com/rknell/dart_queue)

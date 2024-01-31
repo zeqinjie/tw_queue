@@ -445,5 +445,60 @@ void main() {
       expect(results[2], t2);
       expect(results[3], t3);
     });
+
+    test("remove all", () async {
+      final queue = TWQueue();
+      final t1 = 'testQueue6-1';
+      final t2 = 'testQueue6-2';
+      final t3 = 'testQueue6-3';
+      final t4 = 'testQueue6-4';
+      final results = <String?>[];
+
+      unawaited(
+        queue.add(
+          () async {
+            await Future.delayed(const Duration(seconds: 2));
+            print('t1 = $t1');
+            results.add(t1);
+          },
+          tag: t1,
+        ),
+      );
+      unawaited(
+        queue.add(
+          () async {
+            await Future.delayed(const Duration(seconds: 1));
+            print('t2 = $t2');
+            results.add(t2);
+          },
+          tag: t2,
+        ),
+      );
+
+      unawaited(
+        queue.add(
+          () async {
+            await Future.delayed(const Duration(seconds: 1));
+            print('t3 = $t3');
+            results.add(t3);
+          },
+          tag: t3,
+        ),
+      );
+
+      unawaited(
+        queue.add(
+          () async {
+            await Future.delayed(const Duration(seconds: 1));
+            print('t4 = $t4');
+            results.add(t4);
+          },
+          tag: t4,
+        ),
+      );
+      queue.removeAll();
+      await queue.onComplete;
+      expect(results.length, 1);
+    });
   });
 }

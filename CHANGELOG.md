@@ -11,3 +11,6 @@ fork form [dart_queue](https://github.com/rknell/dart_queue)
 
 ## 0.0.2
 * add demo
+
+## 0.0.3
+* add removes all items from the queue that have not thrown a [QueueCancelledException]

@@ -1,10 +1,4 @@
-/*
- * @Author: zhengzeqin
- * @Date: 2022-07-21 10:12:34
- * @LastEditTime: 2022-07-21 10:12:38
- * @Description: your project
- */
-
+// ignore: depend_on_referenced_packages
 import 'package:stack_trace/stack_trace.dart';
 
 enum TWLogMode {
@@ -15,8 +9,9 @@ enum TWLogMode {
 }
 
 const int _limitLength = 800;
-List<String> TWHistoryLogs = [];
+List<String> historyLogs = [];
 
+// ignore: non_constant_identifier_names
 void TWLog(dynamic msg, {TWLogMode mode = TWLogMode.debug}) {
   var chain = Chain.current(); // Chain.forTrace(StackTrace.current);
   // 将 core 和 flutter 包的堆栈合起来（即相关数据只剩其中一条）
@@ -51,6 +46,7 @@ void TWLog(dynamic msg, {TWLogMode mode = TWLogMode.debug}) {
   final printStr =
       "$modeStr ${frame.uri.toString().split("/").last}(${frame.line}) - $msg ";
   if (printStr.length < _limitLength) {
+    // ignore: avoid_print
     print(printStr);
   } else {
     segmentationLog(printStr);
@@ -62,11 +58,13 @@ void segmentationLog(String msg) {
   for (var index = 0; index < msg.length; index++) {
     outStr.write(msg[index]);
     if (index % _limitLength == 0 && index != 0) {
+      // ignore: avoid_print
       print(outStr);
       outStr.clear();
       var lastIndex = index + 1;
       if (msg.length - lastIndex < _limitLength) {
         var remainderStr = msg.substring(lastIndex, msg.length);
+        // ignore: avoid_print
         print(remainderStr);
         break;
       }

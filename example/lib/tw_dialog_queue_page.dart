@@ -1,7 +1,7 @@
+import 'package:example/common/tw_dialog_manager.dart';
 import 'package:example/common/tw_show_animation_dialog.dart';
 import 'package:example/common/tw_toot.dart';
 import 'package:flutter/material.dart';
-import 'package:tw_queue/tw_queue.dart';
 
 class TWDialogQueuePage extends StatefulWidget {
   const TWDialogQueuePage({Key? key}) : super(key: key);
@@ -11,7 +11,7 @@ class TWDialogQueuePage extends StatefulWidget {
 }
 
 class _TWDialogQueuePageState extends State<TWDialogQueuePage> {
-  final queue = TWQueue();
+  final queueManager = TWDialogManager();
   @override
   void initState() {
     super.initState();
@@ -50,7 +50,7 @@ class _TWDialogQueuePageState extends State<TWDialogQueuePage> {
     BuildContext context,
     String title,
   ) {
-    queue.add(
+    queueManager.add(
       () => twShowAnimationDialog(
         context: context,
         transitionType: TwTransitionType.inFromBottom,
@@ -77,6 +77,14 @@ class _TWDialogQueuePageState extends State<TWDialogQueuePage> {
                       ),
                       onPressed: () {
                         showDialog(context, TWTool.randomColor().toString());
+                      },
+                    ),
+                    ElevatedButton(
+                      child: const Text(
+                        'cancel',
+                      ),
+                      onPressed: () {
+                        queueManager.cancel();
                       },
                     ),
                     ElevatedButton(
