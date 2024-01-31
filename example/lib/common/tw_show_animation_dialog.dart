@@ -124,9 +124,9 @@ Widget _buildDialogTransitions(
     );
   } else if (type == TwTransitionType.size) {
     return SizeTransition(
-      child: child,
       sizeFactor: Tween<double>(begin: 0.1, end: 1.0)
           .animate(CurvedAnimation(parent: animaton1, curve: Curves.linear)),
+      child: child,
     );
   } else {
     return child;

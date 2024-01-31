@@ -92,10 +92,10 @@ class _TWQueueTestPageState extends State<TWQueueTestPage> {
     final queue = TWQueue(parallel: 2);
 
     //Queue up a future and await its result
-    final result1 =
-        await queue.add(() => Future.delayed(Duration(milliseconds: 10)));
-    final result2 =
-        await queue.add(() => Future.delayed(Duration(milliseconds: 10)));
+
+    await queue.add(() => Future.delayed(const Duration(milliseconds: 10)));
+
+    await queue.add(() => Future.delayed(const Duration(milliseconds: 10)));
 
     await queue.onComplete;
   }
@@ -156,10 +156,10 @@ class _TWQueueTestPageState extends State<TWQueueTestPage> {
   /// Set task priority
   testQueue4() async {
     final queue = TWQueue();
-    final t1 = 'testQueue4-1';
-    final t2 = 'testQueue4-2';
-    final t3 = 'testQueue4-3';
-    final t4 = 'testQueue4-4';
+    const t1 = 'testQueue4-1';
+    const t2 = 'testQueue4-2';
+    const t3 = 'testQueue4-3';
+    const t4 = 'testQueue4-4';
     final results = <String?>[];
     //Queue up a future and await its result
     queue.add(
@@ -205,10 +205,10 @@ class _TWQueueTestPageState extends State<TWQueueTestPage> {
   /// Remove Task
   testQueue5() async {
     final queue = TWQueue();
-    final t1 = 'testQueue5-1';
-    final t2 = 'testQueue5-2';
-    final t3 = 'testQueue5-3';
-    final t4 = 'testQueue5-4';
+    const t1 = 'testQueue5-1';
+    const t2 = 'testQueue5-2';
+    const t3 = 'testQueue5-3';
+    const t4 = 'testQueue5-4';
     final results = <String?>[];
     unawaited(
       queue.add(
@@ -258,10 +258,10 @@ class _TWQueueTestPageState extends State<TWQueueTestPage> {
   testQueue6() async {
     final queue = TWQueue();
     final results = <String?>[];
-    final t1 = 'testQueue6-1';
-    final t2 = 'testQueue6-2';
-    final t3 = 'testQueue6-3';
-    final t4 = 'testQueue6-4';
+    const t1 = 'testQueue6-1';
+    const t2 = 'testQueue6-2';
+    const t3 = 'testQueue6-3';
+    const t4 = 'testQueue6-4';
 
     await queue.add(
       () async {
@@ -302,10 +302,10 @@ class _TWQueueTestPageState extends State<TWQueueTestPage> {
   testQueue7() async {
     final queue = TWQueue();
     final results = <String?>[];
-    final t1 = 'testQueue7-1';
-    final t2 = 'testQueue7-2';
-    final t3 = 'testQueue7-3';
-    final t4 = 'testQueue7-4';
+    const t1 = 'testQueue7-1';
+    const t2 = 'testQueue7-2';
+    const t3 = 'testQueue7-3';
+    const t4 = 'testQueue7-4';
 
     unawaited(queue.add(
       () async {
