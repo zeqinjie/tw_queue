@@ -84,7 +84,7 @@ class _TWDialogQueuePageState extends State<TWDialogQueuePage> {
                         'cancel',
                       ),
                       onPressed: () {
-                        queueManager.cancel();
+                        queueManager.removeAll();
                       },
                     ),
                     ElevatedButton(

@@ -11,7 +11,6 @@ enum TwTransitionType {
   size,
 }
 
-/// 自定义动画弹窗
 Future<T?> twShowAnimationDialog<T>({
   required BuildContext context,
   required WidgetBuilder builder,
@@ -59,13 +58,9 @@ Widget _buildDialogTransitions(
     Widget child,
     TwTransitionType type) {
   if (type == TwTransitionType.fade) {
-    // 渐变效果
     return FadeTransition(
-      // 从0开始到1
       opacity: Tween(begin: 0.0, end: 1.0).animate(CurvedAnimation(
-        // 传入设置的动画
         parent: animaton1,
-        // 设置效果，快进漫出   这里有很多内置的效果
         curve: Curves.fastOutSlowIn,
       )),
       child: child,
@@ -77,7 +72,6 @@ Widget _buildDialogTransitions(
       child: child,
     );
   } else if (type == TwTransitionType.rotation) {
-    // 旋转加缩放动画效果
     return RotationTransition(
       turns: Tween(begin: 0.0, end: 1.0).animate(CurvedAnimation(
         parent: animaton1,
@@ -90,7 +84,6 @@ Widget _buildDialogTransitions(
       ),
     );
   } else if (type == TwTransitionType.inFromLeft) {
-    // 左右滑动动画效果
     return SlideTransition(
       position: Tween<Offset>(
               begin: const Offset(-1.0, 0.0), end: const Offset(0.0, 0.0))
