@@ -176,6 +176,7 @@ class TWQueue {
   }
 
   /// Removes all items from the queue that have not thrown a [QueueCancelledException]
+  /// It will be removed from the queue if it has not yet been executed.
   void removeAll() {
     _nextCycle.clear();
     activeItemTags.clear();

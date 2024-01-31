@@ -21,6 +21,7 @@ class _TWQueueTestPageState extends State<TWQueueTestPage> {
     testQueue4();
     testQueue5();
     testQueue6();
+    testQueue7();
   }
 
   @override
@@ -152,6 +153,7 @@ class _TWQueueTestPageState extends State<TWQueueTestPage> {
         .catchError((e) => TWLog('Message 4 error: $e')));
   }
 
+  /// Set task priority
   testQueue4() async {
     final queue = TWQueue();
     final t1 = 'testQueue4-1';
@@ -200,7 +202,7 @@ class _TWQueueTestPageState extends State<TWQueueTestPage> {
     TWLog('results = $results');
   }
 
-  /// remove
+  /// Remove Task
   testQueue5() async {
     final queue = TWQueue();
     final t1 = 'testQueue5-1';
@@ -252,6 +254,7 @@ class _TWQueueTestPageState extends State<TWQueueTestPage> {
     TWLog('results $results');
   }
 
+  /// Pause and Resume
   testQueue6() async {
     final queue = TWQueue();
     final results = <String?>[];
@@ -292,6 +295,44 @@ class _TWQueueTestPageState extends State<TWQueueTestPage> {
     });
     await queue.onComplete;
     // onComplete results [testQueue4-1, testQueue4-2, testQueue4-3, testQueue4-4]
+    TWLog('onComplete results $results');
+  }
+
+  /// Remove All
+  testQueue7() async {
+    final queue = TWQueue();
+    final results = <String?>[];
+    final t1 = 'testQueue7-1';
+    final t2 = 'testQueue7-2';
+    final t3 = 'testQueue7-3';
+    final t4 = 'testQueue7-4';
+
+    unawaited(queue.add(
+      () async {
+        await Future.delayed(const Duration(seconds: 1));
+        results.add(t1);
+      },
+    ));
+    unawaited(queue.add(
+      () async {
+        await Future.delayed(const Duration(seconds: 1));
+        results.add(t2);
+      },
+    ));
+    unawaited(queue.add(
+      () async {
+        await Future.delayed(const Duration(seconds: 1));
+        results.add(t3);
+      },
+    ));
+    unawaited(queue.add(
+      () async {
+        await Future.delayed(const Duration(seconds: 1));
+        results.add(t4);
+      },
+    ));
+    queue.removeAll();
+    await queue.onComplete;
     TWLog('onComplete results $results');
   }
 }
