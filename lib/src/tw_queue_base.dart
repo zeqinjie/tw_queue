@@ -54,8 +54,11 @@ class _QueuedFuture<T> {
 /// Queue to execute Futures in order.
 /// It awaits each future before executing the next one.
 class TWQueue {
+  /// The queue of items to process
   final TWPriorityList<_QueuedFuture> _nextCycle =
       TWPriorityList<_QueuedFuture>();
+
+  TWPriorityList<_QueuedFuture> get nextCycle => _nextCycle;
 
   /// A delay to await between each future.
   final Duration? delay;

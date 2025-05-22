@@ -17,11 +17,32 @@ void main() {
     });
 
     test('it should return a value', () async {
-      final result = await queue.add(() async {
+      final result = queue.add(() async {
         await Future.delayed(const Duration(milliseconds: 100));
-        return "result";
+        return "result1";
       });
-      expect(result, "result");
+      final result2 = queue.add(() async {
+        await Future.delayed(const Duration(milliseconds: 100));
+        return "result2";
+      });
+      final result3 = queue.add(() async {
+        await Future.delayed(const Duration(milliseconds: 100));
+        return "result3";
+      });
+      final result4 = queue.add(() async {
+        await Future.delayed(const Duration(milliseconds: 100));
+        return "result4";
+      });
+      await Future.delayed(const Duration(seconds: 2));
+      final r1 = await result;
+      final r2 = await result2;
+      final r3 = await result3;
+      final r4 = await result4;
+      expect(queue.nextCycle.length, 0);
+      expect(r1, "result1");
+      expect(r2, "result2");
+      expect(r3, "result3");
+      expect(r4, "result4");
     });
 
     test('it should return multiple values', () async {
