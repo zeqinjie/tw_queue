@@ -1,3 +1,12 @@
+# 0.0.4
+* feat support isExistQueueFuture and isExistActiveItem
+
+## 0.0.3
+* feat removes all items from the queue that have not thrown a [QueueCancelledException]
+
+## 0.0.2
+* add demo
+
 ## 0.0.1
 ### Easily queue futures and await their values.
 fork form [dart_queue](https://github.com/rknell/dart_queue)
@@ -9,8 +18,4 @@ fork form [dart_queue](https://github.com/rknell/dart_queue)
 * feat: support pause and resume task
 * feat: support set task priority
 
-## 0.0.2
-* add demo
 
-## 0.0.3
-* feat removes all items from the queue that have not thrown a [QueueCancelledException]

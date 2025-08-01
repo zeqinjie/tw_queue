@@ -1,6 +1,6 @@
 name: tw_queue
 description: Queue up futures from multiple sources and await their return anywhere in your code.
-version: 0.0.3
+version: 0.0.4
 homepage: https://github.com/zeqinjie/tw_queue
 repository: https://github.com/zeqinjie/tw_queue
 

@@ -196,6 +196,10 @@ class TWQueue {
     }
   }
 
+  /// Update the remaining items in the queue
+  ///
+  /// It will be updated when the queue is updated
+  /// and when the queue is paused
   void _updateRemainingItems() {
     final remainingItemsController = _remainingItemsController;
     if (remainingItemsController != null &&
@@ -205,6 +209,10 @@ class TWQueue {
     }
   }
 
+  /// Queue up the next item in the queue
+  ///
+  /// It will be queued up when the queue is not paused
+  /// and when the queue has less than the number of parallel operations
   void _queueUpNext() {
     if (isPause) return;
     if (_nextCycle.isNotEmpty && activeItemTags.length < parallel) {
@@ -230,6 +238,18 @@ class TWQueue {
       }
       _completeListeners.clear();
     }
+  }
+
+  /// Check if the tag is in the queue
+  /// if it active, it will be removed from the queue and return false
+  /// but it exist in the active items
+  bool isExistQueueFuture(String tag) {
+    return _nextCycle.list.where((item) => item.tag == tag).isNotEmpty;
+  }
+
+  /// Check if the tag is in the active items
+  bool isExistActiveItem(String tag) {
+    return activeItemTags.contains(tag);
   }
 }
 

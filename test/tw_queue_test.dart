@@ -500,5 +500,35 @@ void main() {
       await queue.onComplete;
       expect(results.length, 1);
     });
+
+    test("isExistQueueFuture and isExistActiveItem", () async {
+      final t1 = 'testQueue7-1';
+      final t2 = 'testQueue7-2';
+
+      unawaited(
+        queue.add(
+          () async {
+            await Future.delayed(const Duration(seconds: 1));
+          },
+          tag: t1,
+        ),
+      );
+      expect(queue.isExistActiveItem(t1), true);
+      unawaited(
+        queue.add(
+          () async {
+            await Future.delayed(const Duration(seconds: 1));
+          },
+          tag: t2,
+        ),
+      );
+      expect(queue.isExistQueueFuture(t1), false);
+      expect(queue.isExistQueueFuture(t2), true);
+      await queue.onComplete;
+      expect(queue.isExistActiveItem(t1), false);
+      expect(queue.isExistActiveItem(t2), false);
+      expect(queue.isExistQueueFuture(t1), false);
+      expect(queue.isExistQueueFuture(t2), false);
+    });
   });
 }
